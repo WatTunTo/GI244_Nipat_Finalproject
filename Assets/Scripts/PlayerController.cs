@@ -40,7 +40,7 @@ public class PlayerController : MonoBehaviour
     // === เพิ่มระบบระยะทาง ===
     public TextMeshProUGUI distanceText;
     private float distanceTraveled = 0f;
-    private float sceneSpeed = 5f; // ควรตรงกับ speed ของ MoveLeft.cs
+    private float sceneSpeed = 5f;
 
     private void Awake()
     {
@@ -87,7 +87,6 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        // === อัปเดตระยะทาง ===
         if (!IsGameOver)
         {
             distanceTraveled += sceneSpeed * Time.deltaTime;
