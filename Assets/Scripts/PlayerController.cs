@@ -37,6 +37,11 @@ public class PlayerController : MonoBehaviour
 
     public GameObject[] heartIcons;
 
+    // === เพิ่มระบบระยะทาง ===
+    public TextMeshProUGUI distanceText;
+    private float distanceTraveled = 0f;
+    private float sceneSpeed = 5f; // ควรตรงกับ speed ของ MoveLeft.cs
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -49,6 +54,14 @@ public class PlayerController : MonoBehaviour
         playerAnim.SetFloat("Speed_f", 1.0f);
         currentHP = maxHP;
         UpdateHearts();
+
+        // หาความเร็วฉากจาก MoveLeft
+        var sceneObj = GameObject.FindGameObjectWithTag("Scene");
+        if (sceneObj != null)
+        {
+            var moveLeft = sceneObj.GetComponent<MoveLeft>();
+            if (moveLeft != null) sceneSpeed = moveLeft.speed;
+        }
     }
 
     void Update()
@@ -72,6 +85,13 @@ public class PlayerController : MonoBehaviour
                 immuneCountdownText.text = "";
                 showImmuneText = false;
             }
+        }
+
+        // === อัปเดตระยะทาง ===
+        if (!IsGameOver)
+        {
+            distanceTraveled += sceneSpeed * Time.deltaTime;
+            distanceText.text = Mathf.FloorToInt(distanceTraveled) + " m";
         }
     }
 
@@ -117,6 +137,8 @@ public class PlayerController : MonoBehaviour
             move.speed = boostedSpeed;
         }
 
+        sceneSpeed = boostedSpeed;
+
         if (immuneTextWorld != null)
             immuneTextWorld.SetActive(true);
 
@@ -131,6 +153,8 @@ public class PlayerController : MonoBehaviour
         {
             move.speed = originalSceneSpeed;
         }
+
+        sceneSpeed = originalSceneSpeed;
 
         if (immuneTextWorld != null)
             immuneTextWorld.SetActive(false);
